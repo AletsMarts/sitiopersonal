@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ repo }} - Contenido</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #f4f4f6;
+      --text: #1c1c1c;
+      --card: #ffffff;
+      --accent: #0077ff;
+      --preview-bg: #f0f0f0;
+    }
+
+    [data-theme="dark"] {
+      --bg: #1e1e2f;
+      --text: #f5f5f5;
+      --card: #2c2c3b;
+      --accent: #4db8ff;
+      --preview-bg: #2a2a3c;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    ul.repo-list {
+      list-style: none;
+      padding: 0;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .repo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      margin-bottom: 0.8rem;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .repo-item a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .repo-item i {
+      font-size: 1.2rem;
+    }
+
+    .preview {
+      max-width: 700px;
+      margin: 2rem auto;
+      background-color: var(--preview-bg);
+      padding: 1.5rem;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .preview h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <button class="theme-toggle" id="themeToggle" title="Cambiar modo">
+    <i class="fas fa-moon"></i>
+  </button>
+
+  <h1>Contenido del repositorio: <code>{{ repo }}</code></h1>
+
+  <ul class="repo-list">
+    {% for archivo in archivos %}
+      <li class="repo-item">
+        <a href="?file={{ archivo.path }}">
+          {% if archivo.type == "dir" %}
+            <i class="fas fa-folder"></i>
+          {% else %}
+            <i class="fas fa-file-alt"></i>
+          {% endif %}
+          {{ archivo.name }}
+        </a>
+      </li>
+    {% empty %}
+      <li>No hay contenido en el repositorio.</li>
+    {% endfor %}
+  </ul>
+
+  {% if vista_previa %}
+    <div class="preview">
+      <h2>Vista previa: {{ vista_previa.name }}</h2>
+      <pre>{{ vista_previa.content }}</pre>
+    </div>
+  {% endif %}
+
+  <script>
+    const btn = document.getElementById("themeToggle");
+    const body = document.body;
+    const icon = btn.querySelector("i");
+
+    btn.addEventListener("click", () => {
+      const isDark = body.getAttribute("data-theme") === "dark";
+      body.setAttribute("data-theme", isDark ? "light" : "dark");
+      icon.className = isDark ? "fas fa-moon" : "fas fa-sun";
+    });
+  </script>
+</body>
+</html>
